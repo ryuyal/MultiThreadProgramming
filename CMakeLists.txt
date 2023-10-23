@@ -14,3 +14,5 @@ add_executable(condition-variable basic/condition-variable.cpp)
 add_executable(thread-pool-example thread-pool/thread-pool-example.cpp)
 add_executable(async-future thread-pool/async-future.cpp)
 add_executable(atomic thread-pool/atomic.cpp)
+
+add_executable(example1 demo/example1.cpp)
