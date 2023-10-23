@@ -8,7 +8,8 @@
  * lock_guard()
  */
 
-/*#include <iostream>
+/*
+#include <iostream>
 #include<thread>
 #include<mutex>
 
@@ -18,7 +19,7 @@ std::mutex mtx;
 void func(){
     for (int i = 0; i < 100000; ++i) {
         std::lock_guard<std::mutex> lg(mtx);
-        shared_data += 1;
+        shared_data ++;
     }
 }
 int main() {
@@ -30,7 +31,8 @@ int main() {
     t2.join();
 
     std::cout << shared_data << std::endl;
-}*/
+}
+*/
 
 
 /*
@@ -42,6 +44,7 @@ int main() {
 
 int shared_data = 0;
 
+//std::mutex mtx;
 std::timed_mutex mtx;
 
 void func(){
@@ -49,10 +52,9 @@ void func(){
 //        std::unique_lock<std::mutex> lg(mtx); // 构造函数中自动加锁 析构函数自动解锁
         std::unique_lock<std::timed_mutex> lg1(mtx, std::defer_lock); // 构造函数中没有自动加锁
 //        lg1.lock();
-        if(lg1.try_lock_for(std::chrono::seconds(2))){ // 阻塞2s
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // 休眠 1s
+        if(lg1.try_lock_for(std::chrono::seconds(2))){ // 延迟加锁，阻塞2s
+            std::this_thread::sleep_for(std::chrono::seconds(2)); // 休眠 1s
             shared_data++;
-
         }
     }
 }
@@ -66,4 +68,3 @@ int main() {
 
     std::cout << shared_data << std::endl;
 }
-
