@@ -1,109 +1,109 @@
 
 //
 // Created by Yao on 2023/10/23.
-// Description:     
+// Description:
 //
 /*
  * 饿汉模式：类产生的时候就创建好实例对象
  */
-//#include<iostream>
-//class Singleton {
-//public:
-//    static Singleton * GetInstance() {
-//        return singleton_;
-//    }
+// #include<iostream>
+// class Singleton {
+// public:
+//     static Singleton * GetInstance() {
+//         return singleton_;
+//     }
 //
-//    static void DestroyInstance() {
-//        if (!singleton_ ) {
-//            delete singleton_;
-//        }
-//    }
+//     static void DestroyInstance() {
+//         if (!singleton_ ) {
+//             delete singleton_;
+//         }
+//     }
 //
-//private:
-//    // 防止外部构造。
-//    Singleton() = default;
+// private:
+//     // 防止外部构造。
+//     Singleton() = default;
 //
-//    // 防止拷贝和赋值。
-//    Singleton& operator=(const Singleton&) = delete;
-//    Singleton(const Singleton& singleton2) = delete;
+//     // 防止拷贝和赋值。
+//     Singleton& operator=(const Singleton&) = delete;
+//     Singleton(const Singleton& singleton2) = delete;
 //
-//private:
-//    static Singleton* singleton_;
-//};
+// private:
+//     static Singleton* singleton_;
+// };
 //
-//Singleton* Singleton::singleton_ = new Singleton;
+// Singleton* Singleton::singleton_ = new Singleton;
 //
-//int main() {
-//    Singleton* s1 = Singleton::GetInstance();
-//    std::cout << s1 << std::endl;
+// int main() {
+//     Singleton* s1 = Singleton::GetInstance();
+//     std::cout << s1 << std::endl;
 //
-//    Singleton* s2 = Singleton::GetInstance();
-//    std::cout << s2 << std::endl;
+//     Singleton* s2 = Singleton::GetInstance();
+//     std::cout << s2 << std::endl;
 //
-//    Singleton::DestroyInstance();
+//     Singleton::DestroyInstance();
 //
-//    return 0;
-//}
+//     return 0;
+// }
 
 /*
  * 懒汉模式：在需要的时候，才创建对象
  * 延迟构造对象，在第一次使用该对象的时候才进行new该对象
  * Double-Checked Locking Pattern (DCLP)
  */
-//#include <iostream>
-//#include <mutex>
+// #include <iostream>
+// #include <mutex>
 //
-//class Singleton {
-//public:
-//    static Singleton* GetInstance() {
-//        // Double-Checked Locking Pattern (DCLP)
-//        if (instance_ == nullptr) {
-//            std::lock_guard<std::mutex> lock(mutex_);
-//            if (instance_ == nullptr) {
-//                instance_ = new Singleton;
-//            }
-//        }
+// class Singleton {
+// public:
+//     static Singleton* GetInstance() {
+//         // Double-Checked Locking Pattern (DCLP)
+//         if (instance_ == nullptr) {
+//             std::lock_guard<std::mutex> lock(mutex_);
+//             if (instance_ == nullptr) {
+//                 instance_ = new Singleton;
+//             }
+//         }
 //
-//        return instance_;
-//    }
+//         return instance_;
+//     }
 //
-//    ~Singleton() = default;
+//     ~Singleton() = default;
 //
-//    // 释放资源。
-//    void Destroy() {
-//        if (instance_ != nullptr) {
-//            delete instance_;
-//            instance_ = nullptr;
-//        }
-//    }
+//     // 释放资源。
+//     void Destroy() {
+//         if (instance_ != nullptr) {
+//             delete instance_;
+//             instance_ = nullptr;
+//         }
+//     }
 //
-//    void PrintAddress() const {
-//        std::cout << this << std::endl;
-//    }
+//     void PrintAddress() const {
+//         std::cout << this << std::endl;
+//     }
 //
-//private:
-//    Singleton() = default;
+// private:
+//     Singleton() = default;
 //
-//    Singleton(const Singleton&) = delete;
-//    Singleton& operator=(const Singleton&) = delete;
+//     Singleton(const Singleton&) = delete;
+//     Singleton& operator=(const Singleton&) = delete;
 //
-//private:
-//    static Singleton* instance_;
-//    static std::mutex mutex_;
-//};
+// private:
+//     static Singleton* instance_;
+//     static std::mutex mutex_;
+// };
 //
-//Singleton* Singleton::instance_ = nullptr;
-//std::mutex Singleton::mutex_;
+// Singleton* Singleton::instance_ = nullptr;
+// std::mutex Singleton::mutex_;
 //
-//int main() {
-//    Singleton* s1 = Singleton::GetInstance();
-//    s1->PrintAddress();
+// int main() {
+//     Singleton* s1 = Singleton::GetInstance();
+//     s1->PrintAddress();
 //
-//    Singleton* s2 = Singleton::GetInstance();
-//    s2->PrintAddress();
+//     Singleton* s2 = Singleton::GetInstance();
+//     s2->PrintAddress();
 //
-//    return 0;
-//}
+//     return 0;
+// }
 
 /*
  * call_once实现单例
@@ -112,44 +112,43 @@
 #include <memory>
 #include <mutex>
 
-class Singleton {
-public:
-    static Singleton& GetInstance() {
+class Singleton
+{
+  public:
+    static Singleton &GetInstance()
+    {
         static std::once_flag s_flag;
-        std::call_once(s_flag, [&]() {
-            instance_.reset(new Singleton);
-        });
+        std::call_once(s_flag, [&]() { instance_.reset(new Singleton); });
 
         return *instance_;
     }
 
     ~Singleton() = default;
 
-    void PrintAddress() const {
+    void PrintAddress() const
+    {
         std::cout << this << std::endl;
     }
 
-private:
+  private:
     Singleton() = default;
 
-    Singleton(const Singleton&) = delete;
-    Singleton& operator=(const Singleton&) = delete;
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton &) = delete;
 
-private:
+  private:
     static std::unique_ptr<Singleton> instance_;
 };
 
 std::unique_ptr<Singleton> Singleton::instance_;
 
-int main() {
-    Singleton& s1 = Singleton::GetInstance();
+int main()
+{
+    Singleton &s1 = Singleton::GetInstance();
     s1.PrintAddress();
 
-    Singleton& s2 = Singleton::GetInstance();
+    Singleton &s2 = Singleton::GetInstance();
     s2.PrintAddress();
 
     return 0;
 }
-
-
-

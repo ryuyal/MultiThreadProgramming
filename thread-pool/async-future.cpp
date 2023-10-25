@@ -1,15 +1,17 @@
 
 //
 // Created by Yao on 2023/10/23.
-// Description:     
+// Description:
 //
 
-#include <iostream>
 #include <future>
-#include<thread>
-int calculate() {
+#include <iostream>
+#include <thread>
+int calculate()
+{
     int i = 0;
-    for (i = 0; i < 1000; ++i) {
+    for (i = 0; i < 1000; ++i)
+    {
         i++;
     }
     return i;
@@ -47,11 +49,12 @@ int calculate() {
 /*
  * promise
  */
-void func(std::promise<int>& f){
+void func(std::promise<int> &f)
+{
     f.set_value(1999);
-
 }
-int main(){
+int main()
+{
     std::promise<int> f;
     auto future_result = f.get_future();
     std::thread t1(func, std::ref(f));
@@ -60,4 +63,3 @@ int main(){
 
     return 0;
 }
-

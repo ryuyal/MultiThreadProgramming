@@ -5,7 +5,7 @@
 //
 
 #include <iostream>
-#include<thread>
+#include <thread>
 
 /*
  * 传递临时变量的问题—使用std::ref() 传递引用类型
@@ -52,7 +52,6 @@ int main() {
 }
 */
 
-
 /*
  * 传递指针或引用指向已经释放的内存问题
  */
@@ -94,20 +93,24 @@ int main(){
 /*
  * 入口函数为类的私有成员函数
  */
-#include<memory>
-class A{
-private:
+#include <memory>
+class A
+{
+  private:
     friend void thread_foo(); // 友元
-    void foo() {
+    void foo()
+    {
         std::cout << "Hello" << std::endl;
     }
 };
 
-void thread_foo(){
+void thread_foo()
+{
     std::shared_ptr<A> a = std::make_shared<A>();
     std::thread t(&A::foo, a);
     t.join();
 }
-int main(){
+int main()
+{
     thread_foo();
 }
