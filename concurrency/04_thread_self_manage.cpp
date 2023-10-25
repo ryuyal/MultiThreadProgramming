@@ -1,18 +1,19 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
+#include <chrono>
+#include <ctime>
+#include <iomanip> // 处理输入输出流中的格式化操作
 #include <iostream>
-#include<thread>
-#include<sstream>
-#include<ctime>
-#include<chrono>
-#include<iomanip> // 处理输入输出流中的格式化操作
+#include <sstream>
+#include <thread>
 using namespace std;
 
-void print_time() {
+void print_time()
+{
     auto now = chrono::system_clock::now();
     auto in_time_t = chrono::system_clock::to_time_t(now);
 
@@ -21,18 +22,22 @@ void print_time() {
     cout << "now is: " << ss.str() << endl;
 }
 
-void sleep_thread() {
+void sleep_thread()
+{
     this_thread::sleep_for(chrono::seconds(3));
     cout << "[thread-" << this_thread::get_id() << "] is waking up" << endl;
 }
 
-void loop_thread() {
-    for (int i = 0; i < 10; i++) {
+void loop_thread()
+{
+    for (int i = 0; i < 10; i++)
+    {
         cout << "[thread-" << this_thread::get_id() << "] print: " << i << endl;
     }
 }
 
-int main() {
+int main()
+{
     print_time();
 
     thread t1(sleep_thread);

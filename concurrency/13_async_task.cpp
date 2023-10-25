@@ -1,7 +1,7 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
 /*
@@ -40,10 +40,10 @@ int main() {
  */
 
 /*#include<iostream>
+#include<chrono>
+#include<cmath>
 #include<future>
 #include<thread>
-#include<cmath>
-#include<chrono>
 using namespace std;
 
 static const int MAX = 10e8;
@@ -75,39 +75,46 @@ int main(){
 /*
  * 面向对象
  */
-#include<iostream>
-#include<future>
-#include<thread>
-#include<cmath>
-#include<chrono>
+#include <chrono>
+#include <cmath>
+#include <future>
+#include <iostream>
+#include <thread>
 using namespace std;
 
 static const int MAX = 10e8;
 
-class Worker {
-public:
-    Worker(int min, int max): mMin(min), mMax(max) {}
-    double work() {
+class Worker
+{
+  public:
+    Worker(int min, int max) : mMin(min), mMax(max)
+    {
+    }
+    double work()
+    {
         mResult = 0;
-        for (int i = mMin; i <= mMax; i++) {
+        for (int i = mMin; i <= mMax; i++)
+        {
             mResult += sqrt(i);
         }
         return mResult;
     }
-    double getResult() {
+    double getResult()
+    {
         return mResult;
     }
 
-private:
+  private:
     int mMin;
     int mMax;
     double mResult;
 };
 
-int main() {
+int main()
+{
     Worker w(0, MAX);
     cout << "Task in class triggered" << endl;
-    auto f3 = async(&Worker::work, &w);// 请注意这里是&w，因此传递的是对象的指针。如果不写&将传入w对象的临时复制。
+    auto f3 = async(&Worker::work, &w); // 请注意这里是&w，因此传递的是对象的指针。如果不写&将传入w对象的临时复制。
     f3.wait();
     cout << "Task in class finish, result: " << w.getResult() << endl << endl;
 

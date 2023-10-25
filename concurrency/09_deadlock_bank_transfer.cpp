@@ -1,52 +1,61 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
 #include <iostream>
-#include<mutex>
-#include<string>
-#include<set>
-#include<thread>
+#include <mutex>
+#include <set>
+#include <string>
+#include <thread>
 using namespace std;
 
-class Account {
-public:
-    Account(string name, double money): mName(name), mMoney(money) {};
+class Account
+{
+  public:
+    Account(string name, double money) : mName(name), mMoney(money){};
 
-public:
-    void changeMoney(double amount) {
+  public:
+    void changeMoney(double amount)
+    {
         mMoney += amount;
     }
-    string getName() {
+    string getName()
+    {
         return mName;
     }
-    double getMoney() {
+    double getMoney()
+    {
         return mMoney;
     }
-    mutex* getLock() {
+    mutex *getLock()
+    {
         return &mMoneyLock;
     }
 
-private:
+  private:
     string mName;
     double mMoney;
     mutex mMoneyLock;
 };
 
-class Bank {
-public:
-    void addAccount(Account* account) {
+class Bank
+{
+  public:
+    void addAccount(Account *account)
+    {
         mAccounts.insert(account);
     }
 
     // 转账操作
-    bool transferMoney(Account* accountA, Account* accountB, double amount) {
+    bool transferMoney(Account *accountA, Account *accountB, double amount)
+    {
         lock_guard guardA(*accountA->getLock());
         lock_guard guardB(*accountB->getLock());
 
-        if (amount > accountA->getMoney()) {
+        if (amount > accountA->getMoney())
+        {
             return false;
         }
 
@@ -55,34 +64,40 @@ public:
         return true;
     }
 
-    double totalMoney() const {
+    double totalMoney() const
+    {
         double sum = 0;
-        for (auto a : mAccounts) {
+        for (auto a : mAccounts)
+        {
             sum += a->getMoney();
         }
         return sum;
     }
 
-private:
-    set<Account*> mAccounts;
+  private:
+    set<Account *> mAccounts;
 };
 
-void randomTransfer(Bank* bank, Account* accountA, Account* accountB) {
-    while(true) {
+void randomTransfer(Bank *bank, Account *accountA, Account *accountB)
+{
+    while (true)
+    {
         double randomMoney = ((double)rand() / RAND_MAX) * 100;
-        if (bank->transferMoney(accountA, accountB, randomMoney)) {
-            cout << "Transfer " << randomMoney << " from " << accountA->getName()
-                 << " to " << accountB->getName()
+        if (bank->transferMoney(accountA, accountB, randomMoney))
+        {
+            cout << "Transfer " << randomMoney << " from " << accountA->getName() << " to " << accountB->getName()
                  << ", Bank totalMoney: " << bank->totalMoney() << endl;
-        } else {
-            cout << "Transfer failed, "
-                 << accountA->getName() << " has only $" << accountA->getMoney() << ", but "
+        }
+        else
+        {
+            cout << "Transfer failed, " << accountA->getName() << " has only $" << accountA->getMoney() << ", but "
                  << randomMoney << " required" << endl;
         }
     }
 }
 
-int main() {
+int main()
+{
     Account a("yao", 100);
     Account b("elena", 200);
 

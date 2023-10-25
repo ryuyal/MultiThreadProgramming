@@ -1,17 +1,16 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
 #include <iostream>
-#include<thread>
+#include <thread>
 using namespace std;
 
-int main() {
-    thread t([]{
-        cout << "Hello World from lambda thread." << endl;
-    });
+int main()
+{
+    thread t([] { cout << "Hello World from lambda thread." << endl; });
 
     t.join(); // 等待线程完成其执行
 

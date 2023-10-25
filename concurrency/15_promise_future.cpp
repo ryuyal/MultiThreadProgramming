@@ -1,32 +1,36 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
+#include <cmath>
+#include <future>
 #include <iostream>
-#include<cmath>
-#include<future>
-#include<vector>
+#include <vector>
 using namespace std;
 
 static const int MAX = 10e8;
 
-double concurrent_worker(int min, int max) {
+double concurrent_worker(int min, int max)
+{
     double sum = 0;
-    for (int i = min; i <= max; i++) {
+    for (int i = min; i <= max; i++)
+    {
         sum += sqrt(i);
     }
     return sum;
 }
 
 // 增加了一个promise对象来存放结果。
-void concurrent_task(int min, int max, promise<double>* result) {
+void concurrent_task(int min, int max, promise<double> *result)
+{
     vector<future<double>> results;
 
     unsigned concurrent_count = thread::hardware_concurrency();
     min = 0;
-    for (int i = 0; i < concurrent_count; i++) {
+    for (int i = 0; i < concurrent_count; i++)
+    {
         packaged_task<double(int, int)> task(concurrent_worker);
         results.push_back(task.get_future());
 
@@ -39,14 +43,16 @@ void concurrent_task(int min, int max, promise<double>* result) {
 
     cout << "threads create finish" << endl;
     double sum = 0;
-    for (auto& r : results) {
+    for (auto &r : results)
+    {
         sum += r.get();
     }
     result->set_value(sum);
     cout << "concurrent_task finish" << endl;
 }
 
-int main() {
+int main()
+{
     auto start_time = chrono::steady_clock::now();
 
     promise<double> sum;

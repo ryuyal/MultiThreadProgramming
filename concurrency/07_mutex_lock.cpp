@@ -1,15 +1,15 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
+#include <chrono>
+#include <cmath>
 #include <iostream>
-#include<cmath>
-#include<chrono>
-#include<vector>
-#include<thread>
-#include<mutex>
+#include <mutex>
+#include <thread>
+#include <vector>
 using namespace std;
 
 static const int MAX = 10e8;
@@ -17,8 +17,10 @@ static double sum = 0;
 
 static mutex exclusive;
 
-void concurrent_worker(int min, int max) {
-    for (int i = min; i <= max; i++) {
+void concurrent_worker(int min, int max)
+{
+    for (int i = min; i <= max; i++)
+    {
         exclusive.lock();
         sum += sqrt(i);
         exclusive.unlock();
@@ -28,7 +30,8 @@ void concurrent_worker(int min, int max) {
 /*
  * 多线程
  */
-void concurrent_task(int min, int max) {
+void concurrent_task(int min, int max)
+{
     auto start_time = chrono::steady_clock::now();
 
     unsigned concurrent_count = thread::hardware_concurrency();
@@ -36,12 +39,14 @@ void concurrent_task(int min, int max) {
     vector<thread> threads;
     min = 0;
     sum = 0;
-    for (int t = 0; t < concurrent_count; t++) {
+    for (int t = 0; t < concurrent_count; t++)
+    {
         int range = max / concurrent_count * (t + 1);
         threads.emplace_back(thread(concurrent_worker, min, range));
         min = range + 1;
     }
-    for (auto& t : threads) {
+    for (auto &t : threads)
+    {
         t.join();
     }
 
@@ -49,10 +54,10 @@ void concurrent_task(int min, int max) {
     auto ms = chrono::duration_cast<chrono::milliseconds>(end_time - start_time).count();
     cout << "Concurrent task finish, " << ms << " ms consumed, Result: " << sum << endl;
 }
-int main() {
+int main()
+{
 
     concurrent_task(0, MAX);
 
     return 0;
 }
-

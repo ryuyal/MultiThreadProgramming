@@ -1,31 +1,35 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
+#include <cmath>
+#include <future>
 #include <iostream>
-#include<cmath>
-#include<future>
-#include<vector>
+#include <vector>
 using namespace std;
 
 static const int MAX = 10e8;
 
-double concurrent_worker(int min, int max) {
+double concurrent_worker(int min, int max)
+{
     double sum = 0;
-    for (int i = min; i <= max; i++) {
+    for (int i = min; i <= max; i++)
+    {
         sum += sqrt(i);
     }
     return sum;
 }
 
-double concurrent_task(int min, int max) {
+double concurrent_task(int min, int max)
+{
     vector<future<double>> results;
 
     unsigned concurrent_count = thread::hardware_concurrency();
     min = 0;
-    for (int i = 0; i < concurrent_count; i++) {
+    for (int i = 0; i < concurrent_count; i++)
+    {
         packaged_task<double(int, int)> task(concurrent_worker);
         results.push_back(task.get_future());
 
@@ -38,13 +42,15 @@ double concurrent_task(int min, int max) {
 
     cout << "threads create finish" << endl;
     double sum = 0;
-    for (auto& r : results) {
+    for (auto &r : results)
+    {
         sum += r.get();
     }
     return sum;
 }
 
-int main() {
+int main()
+{
     auto start_time = chrono::steady_clock::now();
 
     double r = concurrent_task(0, MAX);

@@ -1,78 +1,87 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
+#include <condition_variable>
 #include <iostream>
-#include<mutex>
-#include<string>
-#include<set>
-#include<thread>
-#include<condition_variable>
+#include <mutex>
+#include <set>
+#include <string>
+#include <thread>
 using namespace std;
 
-class Account {
-public:
-    Account(string name, double money): mName(name), mMoney(money) {};
+class Account
+{
+  public:
+    Account(string name, double money) : mName(name), mMoney(money){};
 
-public:
-    void changeMoney(double amount) {
+  public:
+    void changeMoney(double amount)
+    {
         unique_lock lock1(mMoneyLock);
-        mConditionVar.wait(lock1, [this, amount] {
-            return mMoney + amount > 0;
-        });
+        mConditionVar.wait(lock1, [this, amount] { return mMoney + amount > 0; });
         mMoney += amount;
         mConditionVar.notify_all();
     }
-    string getName() {
+    string getName()
+    {
         return mName;
     }
-    double getMoney() {
+    double getMoney()
+    {
         return mMoney;
     }
-    mutex* getLock() {
+    mutex *getLock()
+    {
         return &mMoneyLock;
     }
 
-private:
+  private:
     string mName;
     double mMoney;
     mutex mMoneyLock;
     condition_variable mConditionVar;
 };
 
-class Bank {
-public:
-    void addAccount(Account* account) {
+class Bank
+{
+  public:
+    void addAccount(Account *account)
+    {
         mAccounts.insert(account);
     }
 
-    void transferMoney(Account* accountA, Account* accountB, double amount) {
+    void transferMoney(Account *accountA, Account *accountB, double amount)
+    {
         accountA->changeMoney(-amount);
         accountB->changeMoney(amount);
     }
 
-    double totalMoney() const {
+    double totalMoney() const
+    {
         double sum = 0;
-        for (auto a : mAccounts) {
+        for (auto a : mAccounts)
+        {
             sum += a->getMoney();
         }
         return sum;
     }
 
-private:
-    set<Account*> mAccounts;
+  private:
+    set<Account *> mAccounts;
 };
 
 mutex sCoutLock;
-void randomTransfer(Bank* bank, Account* accountA, Account* accountB) {
-    while(true) {
+void randomTransfer(Bank *bank, Account *accountA, Account *accountB)
+{
+    while (true)
+    {
         double randomMoney = ((double)rand() / RAND_MAX) * 100;
         {
             lock_guard guard(sCoutLock);
-            cout << "Try to Transfer " << randomMoney
-                 << " from " << accountA->getName() << "(" << accountA->getMoney()
+            cout << "Try to Transfer " << randomMoney << " from " << accountA->getName() << "(" << accountA->getMoney()
                  << ") to " << accountB->getName() << "(" << accountB->getMoney()
                  << "), Bank totalMoney: " << bank->totalMoney() << endl;
         }
@@ -80,7 +89,8 @@ void randomTransfer(Bank* bank, Account* accountA, Account* accountB) {
     }
 }
 
-int main() {
+int main()
+{
     Account a("yao", 100);
     Account b("elena", 200);
 

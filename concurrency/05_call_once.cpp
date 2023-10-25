@@ -1,24 +1,27 @@
 
 //
 // Created by Yao on 2023/10/24.
-// Description:     
+// Description:
 //
 
 #include <iostream>
-#include<thread>
-#include<mutex>
+#include <mutex>
+#include <thread>
 
 using namespace std;
-void init() {
+void init()
+{
     cout << "Initialing..." << endl;
     // Do something...
 }
 
-void worker(once_flag * flag) {
+void worker(once_flag *flag)
+{
     call_once(*flag, init);
 }
 
-int main() {
+int main()
+{
     once_flag flag;
 
     // 有些任务需要执行一次，并且只希望它执行一次，例如资源的初始化任务
